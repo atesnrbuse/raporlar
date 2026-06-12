@@ -1,0 +1,63 @@
+# Neden Veri Yapısı Var?
+> Bilgisayar belleği (RAM), ardışık olarak sıralanmış baytlardan oluşan devasa bir adres alanıdır. Ham veri, bu alanda plansız bir şekilde saklanırsa ona ulaşmak, işlemek ve yönetmek büyük bir kaos yaratır.
+Veri yapıları verilerin bilgisayar belleğinde organize edilmesi, yönetilmesi ve saklanması için kullanılan sistematik yöntemlerdir. 
+
+- Zaman ve Alan Verimliliği: Farklı problemler, farklı veri erişim modelleri gerektirir. Doğru veri yapısı seçilmediğinde, basit bir arama işlemi bile modern işlemcileri saniyelerce meşgul edebilir. Veri yapıları, minimum bellek ve minimum işlemci süresi ile sonuca ulaşmayı sağlar.
+
+- Soyutlama ve Modülerlik : Veri yapıları, Soyut Veri Tipleri aracılığıyla verinin nasıl saklandığıyla değil, ne yaptığıyla ilgilenmemizi sağlar. Örneğin, bir kuyruk (Queue) yapısının arkasında dizi mi yoksa bağlı liste mi olduğunu bilmeden sadece "ekle" ve "çıkar" fonksiyonlarını kullanabiliriz.
+
+- Büyük Veri ve Ölçeklenebilirlik : Küçük verilerde (örneğin 10 elemanlı bir listede) hangi yöntemi kullandığınızın önemi yoktur. Ancak veri boyutu milyonlara ulaştığında, optimize edilmemiş bir yapı sistemin kilitlenmesine neden olur.
+
+- Gerçek Dünya Problemlerini Modelleyebilme: Hayattaki ilişkiler her zaman doğrusal değildir. Örneğin, şehirler arası yollar bir Graf, bir şirketin organizasyon şeması ise bir Ağaç (Tree) yapısıdır. Veri yapıları, bu karmaşık ilişkileri bilgisayar diline tercüme eder.
+
+# Big-O Mantığı Nedir?
+> Big-O Notasyonu, bir algoritmanın girdi boyutu (n) büyüdükçe, harcayacağı zamanı veya ihtiyaç duyacağı bellek alanını ifade eden asimptotik bir analiz yöntemidir.Akademik açıdan Big-O, bir algoritmanın en kötü durum (Worst-Case) senaryosundaki üst sınırını temsil eder. Donanım özelliklerinden (işlemci hızı, RAM kalitesi vb.) bağımsız olarak, sadece yapılan temel operasyon sayısının girdi boyutuna bağlı değişimini ölçer.
+
+> En Yaygın Karmaşıklık Sınıfları (Yavaştan Hızlıya)
+- Algoritmalar, ölçeklenebilirliklerine göre belirli karmaşıklık sınıflarına ayrılır. Aşağıdaki grafik, girdi sayısı arttıkça zaman maliyetinin nasıl değiştiğini göstermektedir:
+1. O(1) - Sabit Zaman (Constant Time): Girdi boyutu ne olursa olsun işlem süresi değişmez.Örnek: Bir dizinin ilk elemanına erişmek.
+2. O(log n) - Logaritmik Zaman (Logarithmic Time): Algoritma her adımda problemi yarıya indirir. Çok verimlidir.Örnek: Sıralı bir dizide 3. Binary Search (İkili Arama).
+3. O(n) - Doğrusal Zaman (Linear Time): İşlem süresi, girdi boyutuyla birebir doğru orantılı artar.Örnek: Sırasız bir listede bir elemanı baştan sona aramak (Linear Search).
+4. O(n log n) - Doğrusallık Ötesi / Log-linear Zaman: Genellikle en verimli sıralama algoritmalarında görülür.Örnek: Merge Sort ve Quick Sort.
+5. O(n^2) - Karesel Zaman (Quadratic Time): Genellikle iç içe iki döngünün ($n \times n$) kullanıldığı durumlarda ortaya çıkar. Büyük verilerde verimsizdir.Örnek: Bubble Sort, Insertion Sort.
+6. O(2^n) - Üssel Zaman (Exponential Time): Girdi bir birim arttığında işlem süresi iki katına çıkar. Büyük veriler için felakettir.Örnek: Kaba kuvvet (Brute-force) şifre kırma algoritmaları veya optimize edilmemiş recursive Fibonacci hesabı.
+
+
+ # Array (Dizi)
+Array, ardışık bellek bloklarında (contiguous memory locations) aynı veri türünden elementleri saklayan statik bir veri yapısıdır.Bellek 
+
+Yönetimi: Derleme zamanında (compile-time) boyutu belirlenir (statik diziler için) ve bellek bloğu kesintisiz olarak ayrılır. Bu durum, veri yapısının büyümesini esnek olmaktan çıkarır.
+
+Dezavantajı: Eleman ekleme (insertion) veya silme (deletion) işlemlerinde, bellekteki diğer elemanların kaydırılması (shifting) gerektiğinden maliyetlidir.
+
+# Linked List (Bağlı Liste)
+Linked List, elemanların bellekte ardışık olma zorunluluğunu ortadan kaldıran, dinamik bir veri yapısıdır. Her bir eleman (node), verinin kendisini ve bir sonraki düğümün bellek adresini gösteren bir işaretçi (pointer/reference) barındırır.
+
+Bellek Yönetimi: Bellek, çalışma zamanında (run-time) dinamik olarak ayrılır. Düğümler belleğin farklı bölgelerinde (heap) dağınık halde bulunabilir.
+
+Erişim Mekanizması: Sıralı Erişim (Sequential Access) mekanizması geçerlidir. Bir elemana ulaşmak için ilk düğümden (head) başlayarak işaretçileri takip etmek gerekir.
+
+Avantajı: Bellek boyutu dinamik olarak büyüyüp küçülebilir. İşaretçilerin yönü değiştirilerek O(1) sürede eleman eklenebilir veya silinebilir (eklenecek konumun adresi biliniyorsa).
+
+# Stack (Yığın)
+Stack, soyut bir veri tipi (Abstract Data Type - ADT) olup, eleman yönetimini LIFO (Last In, First Out - Son Giren İlk Çıkar) prensibine göre yürütür. Genellikle bir dizi veya bağlı liste üzerinde implemente edilir.
+
+Operasyonlar: Eleman ekleme (Push) ve eleman çıkarma (Pop) işlemleri sadece yapının tek bir ucundan (Top) gerçekleştirilir.
+
+Kullanım Alanları: Fonksiyon çağrı yönetimi (Call Stack), geri alma (Undo/Redo) mekanizmaları ve özyinelemeli (recursive) algoritmaların iteratife dönüştürülmesi.
+
+# Queue (Kuyruk)
+Queue, eleman yönetimini FIFO (First In, First Out - İlk Giren İlk Çıkar) kuralına göre gerçekleştiren bir diğer doğrusal soyut veri yapısıdır.
+
+Operasyonlar: Eleman ekleme işlemi kuyruğun arkasından (Enqueue / Rear), eleman çıkarma işlemi ise kuyruğun önünden (Dequeue / Front) yapılır.
+
+Kullanım Alanları: İşletim sistemlerinde süreç zamanlama (CPU Scheduling), veri paketlerinin ağ üzerinde sıraya alınması (Buffer yönetimi) ve genişlik öncelikli arama (BFS) algoritmaları.
+
+# HashMap / HashTable (Eşleme Tablosu)
+HashMap, verileri Anahtar-Değer (Key-Value) çiftleri halinde saklayan, ilişkisel (associative) ve doğrusal olmayan bir veri yapısıdır.
+
+Mekanizma: Benzersiz bir anahtar (Key), bir Hash Fonksiyonuna tabi tutularak sayısal bir indekse dönüştürülür ve değer (Value) bu indeksteki hücreye (bucket) yazılır.
+
+Çakışma (Collision): Farklı iki anahtarın aynı indeksi üretmesi durumuna "çakışma" denir. Bu durum, Chaining (Bağlı Liste kullanma) veya Open Addressing (Boş hücre arama) yöntemleriyle çözülür.
+
+Performans: İdeal bir hash fonksiyonu ile arama, ekleme ve silme işlemleri teorik olarak sabit zamanda gerçekleşir.

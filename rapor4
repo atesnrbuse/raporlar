@@ -1,0 +1,72 @@
+1. Dosya Sistemleri ve Depolama Mantığı Nedir?
+    Bir depolama aygıtı (HDD, SSD, USB bellek) fabrikadan çıktığında tıpkı bölmeleri, rafları ve indeks kartları olmayan devasa, boş bir
+kütüphane gibidir. İçeriye milyonlarca veri rastgele atılırsa, aradığımız tek bir sayfayı bulmamız imkansız olur.
+    Dosya Sistemi, bu kütüphaneye raflar yerleştiren, kitapları kategorize eden ve hangi kitabın hangi rafta olduğunu tutan indeks
+defteridir. İşletim sisteminin verileri bir diske nasıl yazacağını, nasıl okuyacağını, isimlerin nasıl verileceğini ve erişim yetkilerini belirleyen kurallar bütünüdür.
+
+- Sektör/Sektör Kümesi (Cluster): Disk üzerindeki en küçük fiziksel veya mantıksal veri saklama alanlarıdır.
+- Adresleme: Dosya sistemi, bir dosya kaydedilirken onu parçalara böler ve bu parçaların hangi adreslerde saklandığını kendi indeks tablosuna (Master File Table veya Gösterge Tabloları) yazar. Dosyayı açmak istediğinizde, işletim sistemi önce bu tabloya bakar.
+
+2. NTFS, ext4 ve APFS Farkları Nelerdir?
+- İşletim Sistemi ve Ekosistem Odakları
+> NTFS: Tamamen Microsoft Windows odaklıdır. Windows'un kurulu olduğu diskler ve harici depolama birimleri için standarttır.
+
+> ext4: Linux dünyasının (Ubuntu, Mint, Debian vb.) ve Android işletim sisteminin omurgasıdır. Açık kaynak kodlu ekosistemler için optimize edilmiştir.
+
+> APFS: Apple'ın kapalı ekosistemi için tasarlanmıştır. Mac bilgisayarlar (macOS), iPhone'lar (iOS) ve iPad'ler bu sistemi kullanır.
+
+- Donanım Optimizasyonu (HDD vs. SSD)
+> NTFS: Hem eski tip mekanik sabit disklere (HDD) hem de yeni nesil katı hal sürücülerine (SSD) uyum sağlayacak şekilde tasarlanmış, genel amaçlı bir yapıdır.
+
+> ext4: Tıpkı NTFS gibi hem HDD hem de SSD'lerde yüksek kararlılıkla çalışır. Disk üzerindeki verilerin parçalanmasını (fragmentation) engellemek için dosyaları diske ardışık bloklar halinde yazmaya çalışır.
+
+> APFS: Tamamen Flash bellek ve SSD mimarisi düşünülerek sıfırdan yazılmıştır. Mekanik disklerde (HDD) performansı düşebilir ancak SSD'lerde okuma/yazma ömrünü uzatan ve hızı maksimuma çıkaran özel algoritmalara sahiptir.
+
+- Dosya Kopyalama ve Alan Yönetimi (Klonlama)
+> NTFS ve ext4: Bir dosyanın kopyasını oluşturduğunuzda, sistem o dosyanın verilerini diskin başka bir bloğuna fiziksel olarak tekrar yazar. Bu hem zaman alır hem de diskte iki kat yer kaplar.
+
+> APFS: "Clone" (Klonlama) özelliğine sahiptir. 10 GB'lık bir videoyu kopyaladığınızda işlem anında biter ve diskte 0 bayt yer kaplar. APFS, yeni bir dosya yaratmak yerine orijinal dosyaya işaret eden bir kopya oluşturur. Sadece kopya dosya üzerinde bir değişiklik yaparsanız, değişen kısımlar diske yazılır (Copy-on-Write).
+
+- Güvenlik, Veri Koruma ve Hata Onarımı
+> NTFS: Dosya ve klasör düzeyinde çok detaylı kullanıcı izinleri (ACL) sunar. Elektrik kesintilerinde veri kaybını önlemek için geleneksel "Journaling" (Günlükleme) sistemini kullanır.
+
+> ext4: Kararlılık konusunda en güvenilen sistemlerden biridir. Diske veri yazılırken bütünlüğü korumak için hem veriyi hem de metaveriyi (dosya bilgilerini) günlükleyen modlara sahiptir.
+
+> APFS: Sistemin o anki durumunun anlık görüntüsünü (Snapshot) çok hızlı bir şekilde alabilir. macOS güncellemelerinde bir sorun çıkarsa, sistem bu snapshot sayesinde saniyeler içinde eski haline dönebilir. Ayrıca çoklu anahtarlı gömülü şifreleme (Encryption) desteği çok güçlüdür.
+
+- Platformlar Arası Geçiş ve Uyumluluk (En Büyük Problem)
+> NTFS formatlı bir diski: Windows'ta sorunsuz kullanırsınız. Linux'ta okuyup yazabilirsiniz. Mac'e taktığınızda ise içindeki dosyaları sadece görebilirsiniz (okuma), içine yeni dosya yükleyemezsiniz (yazma kapalıdır).
+
+> ext4 formatlı bir diski: Linux dışında hiçbir işletim sistemi varsayılan olarak doğrudan tanımaz. Windows veya Mac'e taktığınızda diski biçimlendirmenizi ister, içeriğe erişmek için üçüncü parti sürücüler şarttır.
+
+> APFS formatlı bir diski: Apple cihazları dışında hiçbir sistem yerel olarak okuyamaz veya yazamaz. Windows bir bilgisayara taktığınızda diskin içini açabilmek için ücretli/ücretsiz özel yazılımlar kullanmanız gerekir.
+
+3. Blok Yapısı Nedir?
+
+    Depolama mantığında işletim sistemleri verileri bayt bayt işlemez. Çünkü milyarlarca küçük baytla tek tek uğraşmak inanılmaz bir
+performans kaybına yol açar. Bunun yerine veriler, Blok (Block) veya Windows terimiyle Küme (Cluster) adı verilen paketler halinde gruplanır.
+
+- Blok yapısının kuralları ve mantığı şöyledir:
+Bir blok, genellikle 4 KB boyutundadır. İşletim sistemi diske bir şey yazarken minimum 1 blokluk yer ayırır.
+Slack Space (Boşluk Alanı) Sorunu: Diyelim ki sadece 1 KB boyutunda bir metin belgeniz var. Bu dosya diske yazıldığında, 4 KB'lık bloğun tamamını işgal eder. Geriye kalan 3 KB'lık alan kullanılmaz ve başka bir dosya oraya yazılamaz. Buna "diskteki boyut" ile "dosyanın gerçek boyutu" arasındaki fark denir.
+Eğer büyük dosyalarla çalışıyorsanız (örn. video edit), büyük blok boyutları (örn. 64 KB) performansı artırır. Küçük metin dosyalarıyla çalışıyorsanız, küçük blok boyutları disk alanından tasarruf sağlar.
+
+4. HDD vs SSD Çalışma Prensipleri Nelerdir?
+
+Verinin fiziksel olarak diske nasıl yazıldığı, donanımın türüne bağlıdır. Burada mekanik ve dijital dünyaların savaşı devreye girer.
+
+> HDD (Hard Disk Drive - Sabit Disk Sürücüsü)
+Çalışma Prensibi: Tamamen mekaniktir. İçinde dakikada 5400 veya 7200 kez dönen, üzeri manyetik bir tabaneyle kaplı metal plakalar (platters) bulunur.
+
+- Okuma/Yazma: Bir pikap iğnesine benzeyen okuma/yazma kafası (actuator arm), dönen plakanın üzerinde mikroskobik bir hızla hareket eder. Plaka üzerindeki belirli noktaların manyetik kutuplarını değiştirerek veriyi 1 ve 0 olarak kaydeder veya okur.
+
+- Dezavantajı: Mekanik olduğu için darbelere karşı dayanıksızdır, ses yapar, ısınır ve en önemlisi parçalanma (fragmentation) yaşar. Dosya parçaları diskin farklı yerlerine dağıldığında, kafa fiziksel olarak o noktalara gitmek zorunda kalır ve sistem yavaşlar.
+
+> SSD (Solid State Drive - Katı Hal Sürücüsü)
+- Çalışma Prensibi: Tamamen elektroniktir. İçinde hareket eden hiçbir parça yoktur; akıllı telefonlar veya USB bellekler gibi NAND Flash hafıza çiplerini kullanır.
+
+- Okuma/Yazma: Veriler, çiplerin içindeki transistörlerin (Floating Gate veya Charge Trap) içinde elektrik yükü olarak hapsedilir. Elektrik akımıyla verinin yerini saniyeler içinde bulur.
+
+- Avantajı: Mekanik bir sınır olmadığı için HDD'lere göre yüz kat daha hızlı tepki (Access Time) verir. Dosyanın diskin neresinde olduğunun hiçbir önemi yoktur, çünkü okuma kafasının oraya "gitmesi" gerekmez. Darbelere dayanıklıdır, sessizdir ve çok daha az güç tüketir.
+
+- Özetle dosya sistemi kuralları koyar, blok yapısı veriyi paketler, HDD veya SSD ise bu paketleri fiziksel olarak kendi yöntemleriyle saklar.

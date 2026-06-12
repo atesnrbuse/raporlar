@@ -1,0 +1,79 @@
+- Linux, sunuculardan akıllı telefonlara (Android), süper bilgisayarlardan evinizdeki akıllı cihazlara kadar dünyayı arkadan yöneten, açık kaynak kodlu ve özgür bir işletim sistemi çekirdeğidir.
+
+- Linux Temelleri, bu işletim sisteminin mimarisini, dosya yapısını ve sistemin grafik arayüz (GUI) yerine komut satırı arayüzü (CLI) ile nasıl yönetildiğini anlamayı ifade eder. Linux'ta her şey bir dosyadır (klasörler, donanımlar, süreçler bile) ve sistem "tek bir kök" (/) dizininden dallanarak uzanır.
+
+1. Temel Terminal Komutları
+Terminal, Linux ile doğrudan konuşma şeklinizdir. 
+
+> ls (List): Bulunduğunuz klasördeki dosya ve klasörleri listeler. ls -la şeklinde kullanırsanız gizli dosyaları ve detaylı izinleri de görebilirsiniz.
+
+> cd (Change Directory): Klasörler arasında geçiş yapmanızı sağlar. Örneğin; cd Documents sizi Belgeler klasörüne götürür. cd .. ise bir üst klasöre çıkarır.
+
+> mkdir (Make Directory): Yeni bir klasör oluşturur. Örneğin; mkdir YeniKlasor.
+
+> grep (Global Regular Expression Print): Dosyaların veya komut çıktılarının içinde belirli bir kelimeyi/metni aramaya yarayan çok güçlü bir filtredir. Örneğin; grep "hata" log.txt komutu, dosyadaki içinde "hata" geçen satırları bulur.
+
+> chmod (Change Mode): Dosya ve klasörlerin erişim izinlerini değiştirmek için kullanılır.
+
+> top (Table of Processes): Sistem kaynaklarının (CPU, RAM) durumunu ve arka planda çalışan işlemleri canlı olarak gösteren bir görev yöneticisidir. (Daha modern bir alternatifi htop'tur).
+
+2. Paket Yönetimi (apt / pacman / dnf) nedir?
+    Paket yönetimi, Linux'ta program yüklemeyi, güncellemeyi ve kaldırmayı otomatikleştiren bir sistemdir. Windows'taki gibi internetten
+exe dosyası aramak yerine, Linux'un güvenli ve merkezi "App Store" mekanizması gibi çalışır.
+
+- Nasıl Çalışır?
+Siz tek bir komut verdiğinizde paket yöneticisi dağıtımın güvenli "Depo" (Repository) adı verilen sunucularına bağlanır.
+Programın çalışması için gereken ek paketleri (Bağımlılıklar) otomatik tespit eder.
+Hepsini tek seferde indirir ve bilgisayarınıza güvenle kurur.
+
+> Popüler Paket Yöneticileri
+- APT: Ubuntu, Debian ve Linux Mint gibi dağıtımlarda kullanılır. (Örn: sudo apt install vlc)
+
+- DNF: Fedora ve Red Hat (RHEL) tabanlı sistemlerde kullanılır. (Örn: sudo dnf install vlc)
+
+- Pacman: Arch Linux ve Manjaro gibi dağıtımlarda kullanılır. Hızlı ve hafiftir. (Örn: sudo pacman -S vlc)
+
+Kısacası tüm uygulamaları tek bir merkezden, güvenli ve tek komutla yönetmenizi sağlayan sistemdir.
+
+3. Dosya İzinleri (File Permissions) Nedir?
+    Dosya izinleri, Linux'ta hangi kullanıcının hangi dosya veya klasör üzerinde ne tür yetkilere sahip olduğunu belirleyen güvenlik
+sistemidir. Linux çok kullanıcılı bir sistem olduğu için dosyaların güvenliğini bu izinlerle korur.
+
+> Linux'ta bir dosyanın izinlerine bakıldığında (örneğin ls -l komutuyla) rwxr-xr-- gibi 9 karakterli bir harf grubu görülür. Bu grup sırasıyla 3 parçaya ayrılır:
+
+- Owner (Sahibi): Dosyayı oluşturan kullanıcıdır (İlk 3 harf: rwx)
+- Group (Grup): Dosyaya ortak erişimi olan kullanıcı grubudur (Ortadaki 3 harf: r-x).
+- Others (Diğerleri): Sistemdeki kalan tüm diğer kullanıcılardır (Son 3 harf: r--).
+
+> Yetki Türleri ve Puanları: 
+İzinler hem harflerle hem de sayısal kodlarla ifade edilir.
+
+- r = Read / Okuma - 4 Puan
+    Dosyanın içeriğini görmeyi veya klasör içindeki dosyaları listelemeyi sağlar.
+- w = (Write / Yazma - 2 Puan):
+    Dosyayı değiştirmeyi, silmeyi veya klasör içine yeni dosya eklemeyi sağlar.
+- x = (Execute / Çalıştırma - 1 Puan): 
+    Bir betiği (script) veya programı çalıştırmayı sağlar.
+
+> İzinleri Değiştirme 
+Bu izinler chmod komutu ve sayıların toplamı kullanılarak değiştirilir.
+
+- Örnek: chmod 755 dosya.sh
+7 (4 + 2 + 1): Sahibi okuyabilir, yazabilir, çalıştırabilir.
+5 (4 + 1): Grup okuyabilir ve çalıştırabilir.
+5 (4 + 1): Diğerleri okuyabilir ve çalıştırabilir.
+
+4. Servisler ve systemctl nedir?
+    Servisler, Linux'ta arka planda kullanıcı arayüzü olmadan sürekli çalışan ve sistemin temel işlevlerini (web sunucusu, veritabanı
+internet bağlantısı, klavye ışıkları vb.) yürüten programlardır. Windows'taki "Hizmetler" yapısı ile tamamen aynıdır.
+Modern Linux sistemlerinde bu servisleri yöneten ana merkezin adı systemd, bu merkezi kontrol etmek için terminalde kullandığımız komut ise systemctl'dir.
+
+> En Sık Kullanılan systemctl Komutları
+Bir servisi (örneğin web sunucusu olan nginx'i) yönetmek için şu komutlar kullanılır:
+- sudo systemctl start nginx => Servisi o an çalıştırır.
+- sudo systemctl stop nginx => Çalışan servisi durdurur.
+- sudo systemctl restart nginx => Servisi kapatıp açar (ayarları yenilemek için).
+- sudo systemctl status nginx => Servisin o an çalışıp çalışmadığını ve hata raporlarını gösterir.
+- sudo systemctl enable nginx => Servisi başlangıca ekler; bilgisayar her açıldığında otomatik olarak başlar.
+- sudo systemctl disable nginx => Otomatik başlangıcı iptal eder.
+Özetle systemctl, Linux'ta arka planda çalışan işçileri (servisleri) başlatıp durdurmanızı ve durumlarını denetlemenizi sağlayan yönetim kumandasıdır.

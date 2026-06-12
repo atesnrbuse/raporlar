@@ -1,0 +1,63 @@
++1. GİT'İN TEMEL MANTIĞI
+    Geleneksel yedekleme sistemleri (SVN gibi) dosyaların değişiklik listelerini tutar. Git ise her şeyi fotoğraf çekme (snapshot) mantığıyla yönetir.
+
+# Snapshot (Anlık Görüntü)
+- Git, projenizin o anki durumunu bir bütün olarak görür. Projenizi her kaydettiğinizde, Git tüm dosyalarınızın o anki hâlinin bir fotoğrafını çeker.
+- Eğer bir dosya değişmediyse, Git onu tekrar kopyalamaz sadece bir önceki sürüme bir bağlantı (link) oluşturur.
+- Bu sayede Git inanılmaz derecede hızlı çalışır.
+
+# Commit
+- Commit, çektiğiniz o anlık görüntüyü (snapshot) Git tarihine kalıcı olarak kaydetmektir. Her commit projenin o anki kodlarını, bu değişikliği kimin, ne zaman yaptığını ve ne amaçla yaptığını belirten bir mesajı (commit message) içerir.
+- Her commit, kendisinden önceki commit'e bağlıdır. Böylece geriye dönük kopmayan bir zincir oluşur.
+
+# Branch (Dal)
+- Branch, ana kod çizginizden (genellikle main veya master) ayrılan bağımsız bir çalışma alanıdır.
+- Yeni bir özellik eklemek veya bir hatayı çözmek istediğinizde ana kodu bozmamak için yeni bir branch açarsınız.
+- Git'te branch oluşturmak çok hafiftir; çünkü branch dediğimiz şey aslında sadece belirli bir commit'i işaret eden hareketli bir imleçtir.
+
+2. MERGE vs REBASE: Dalı Ana Kola Nasıl Ekleriz?
+    Bir branch üzerinde çalışmanızı bitirdiniz ve bu değişiklikleri ana kola (main) aktarmak istiyorsunuz. 
+Önünüzde iki popüler yol var: 
+- Merge ve Rebase.
+
+# Merge (Birleştirme)
+- Merge, iki farklı branch'in geçmişini tek bir çatı altında birleştirir.
+
+- Nasıl Çalışır: Git, iki branch'in ayrıldığı ortak commit'i bulur. Ardından iki branch'in de son durumunu alır ve bunları birleştiren yeni bir "Merge Commit" oluşturur.
+- Avantajı: Tarihçeyi aynen korur. Hangi branch'te ne yapılmış, ne zaman birleştirilmiş net olarak görürsünüz (Güvenlidir).
+- Dezavantajı: Çok fazla branch ve merge olduğunda, Git geçmişi (git log) karmakarışık, örümcek ağı gibi bir hal alabilir.
+
+# Rebase (Yeniden Temellendirme)
+- Rebase, kendi branch'inizdeki commit'leri alıp, hedef branch'in en son commit'inin üzerine taşır.
+
+- Nasıl Çalışır: Sizin branch'iniz ana koldan ayrıldıktan sonra ana kola yeni commit'ler gelmiş olabilir. Rebase yaptığınızda, Git sizin değişikliklerinizi geçici olarak kenara alır. Branch'inizin başlangıç noktasını ana kolun en güncel commit'ine taşır ve sizin commit'lerinizi sırayla onun üzerine sıfırdan uygular.
+- Avantajı: Dümdüz, doğrusal (linear) ve tertemiz bir commit geçmişi elde edersiniz. Sanki hiç ayrı bir dalda çalışmamışsınız da her şey tek bir çizgide ilerlemiş gibi görünür.
+- Dezavantajı: Projenin gerçek tarihçesini değiştirir. Altın Kural: Başkalarının da üzerinde çalıştığı, uzak sunucuya (remote) gönderilmiş ortak branch'lerde asla rebase yapılmamalıdır. Tarihçe değişeceği için arkadaşlarınızın commit'leri çakışır ve kaos çıkar.
+
+3. PULL REQUEST(PR) İNCELEME NASIL YAPILIR?
+> Pull Request (PR), yazdığınız kodların ana projeye dahil edilmesi için ekip arkadaşlarınızdan onay istediğiniz bir "gözden geçirme" talebidir. İyi bir PR incelemesi hem kod kalitesini artırır hem de ekip içi öğrenmeyi sağlar.
+> Bir PR'ı incelerken şu adımları takip edebilirsiniz:
+
+# 1. Büyük Resmi Anlayın (PR Açıklaması)
+- Kod satırlarına dalmadan önce PR'ın başlığına ve açıklamasına bakın.
+- Bu PR hangi problemi çözüyor?
+- Eklenen yeni özellik nedir?
+- Varsa eklenen ekran görüntüleri veya test sonuçları incelenir.
+
+# 2. Kodu Adım Adım İnceleyin (Files Changed)
+- Platformun (GitHub, GitLab, Bitbucket vb.) "Files Changed" sekmesine geçerek eklenen (yeşil) ve silinen (kırmızı) kod satırlarını inceleyin:
+- Doğruluk ve Mantık: Kod gerçekten istenen işi yapıyor mu? Mantık hataları veya gözden kaçan uç durumlar (edge cases) var mı?
+- Kod Standartları: Değişken isimleri net ve projenin genel stiline uygun mu? Temiz kod (Clean Code) prensiplerine uyulmuş mu?
+- Tekrar ve Performans: Gereksiz kod tekrarları var mı? Performansı ciddi etkileyecek (örneğin döngü içinde gereksiz veri tabanı istekleri gibi) bir durum var mı?
+
+# 3. Yapıcı Geri Bildirim Verin (Yorum Yapma)
+- Hatalı veya geliştirilmesi gereken bir yer gördüğünüzde ilgili satıra yorum bırakın.
+- Empatik ve Net Olun: "Bu yanlış olmuş" demek yerine, "Burada X yerine Y yöntemini kullanırsak performans/okunabilirlik açısından daha iyi olabilir, ne dersin?" gibi yapıcı bir dil kullanın.
+- Gerektiğinde Övün: Sadece hataları değil, çok şık ve zekice yazılmış kodları da takdir etmek ekip motivasyonunu artırır.
+
+# 4. Kararınızı Verin
+> İncelemeniz bittiğinde PR için bir aksiyon seçersiniz:
+
+- Approve (Onayla): Kod harika görünüyor, ana kola birleşmeye hazır.
+- Request Changes (Değişiklik İste): Kodda düzeltilmesi gereken kritik yerler var. Geliştirici bu düzeltmeleri yapana kadar kod birleştirilemez.
+- Comment (Yorum Yap): Onaylama veya reddetme yok, sadece netleştirilmesi gereken bazı sorular var.
